@@ -1,0 +1,107 @@
+{% extends 'store/base.html' %}
+{% load customfunction %}
+{% load static %}
+{% block links %}
+
+<link rel="stylesheet" href="{% static '/assets/css/type_of_book.css' %}">
+{% endblock %}
+{% block container %}
+
+  <!-- Chọn loại -->
+  <section class="choose-type container">
+    <div class="col nav-type">
+      	{% for p in cat %}
+      <a class="btn-type btnCat" href="{%url 'store:category' p.id %}" data-id="{{p.id}}" ><i ></i>&nbsp;{{p.name}}</a>
+      {% endfor %}
+    </div>
+  </section>
+
+
+
+  <section class="section container mt-80" id="productCart">
+    <hr>
+    <div class="row text center">
+      <h1 class="tag-text">TẤT CẢ SÁCH</h1>
+    </div>
+    <hr>
+     <div class="row row-cols-1 row-cols-md-5 g-3">
+        {% for item in book %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{item.coverpage.url}}" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h6 class="card-title">{{item.name}}</h6>
+                    <p class="card-text"></p>
+                    <a href="{% url 'store:writer' id=item.writer.id %}"><p class="card-text">{{item.writer}}</p></a>
+                    {% if item.pricesale > 0 %}
+                    <p class="text-decoration-line-through">{{ item.price|formatcurrency }}</p>
+                    <p>{{ item.pricesale|formatcurrency }}</p>
+                    <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+                        <span>Sale</span>
+                    </div>
+                    {% else %}
+                    <p>{{ item.price|formatcurrency }}</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                       <button class="buybtn" data-url="{% url 'store:book' id=item.id %}">Mua ngay</button>
+                        <button class="cartbtn  btnAddToCart" data-id="{{ item.id }}">Thêm vào giỏ hàng</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+  </section>
+
+
+
+ <section class="container">
+    <nav aria-label="Page navigation example" class="_pagination">
+     {% if book|length > 0 %}
+<div class="d-pagination">
+    <ul class="pagination">
+        {% if book.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1"><<</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ book.previous_page_number }}"><</a>
+        </li>
+        {% endif %}
+
+        {% for ord in book.paginator.page_range %}
+        {% if book.number == ord %}
+        <li class="page-item active">
+							<span class="page-link"> {{ ord }}</span>
+        </li>
+        {% elif ord > book.number|add:'-3' and ord < book.number|add:'3' %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ ord }}"> {{ ord }}</a>
+            </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if book.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ book.next_page_number }}">> </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ book.paginator.num_pages }}"> >></a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{% else %}
+<h3 class="text-center mt-5">Không tìm thấy sách nào!</h3>
+{% endif %}
+    </nav>
+  </section>
+
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+
+
+

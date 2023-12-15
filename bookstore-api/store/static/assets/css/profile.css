@@ -1,0 +1,48 @@
+.nav-borders .nav-link.active {
+  color: #0061f2;
+  border-bottom-color: #0061f2;
+}
+.nav-borders .nav-link {
+  color: #69707a;
+  border-bottom-width: 0.125rem;
+  border-bottom-style: solid;
+  border-bottom-color: transparent;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.mt-100{
+  margin-top: 100px;
+}
+
+.place-btn{
+  display: flex;
+  justify-content: center;
+}
+
+.btn-submit{
+  padding: 3px 11px 3px 11px;
+  border: 1px solid #000;
+  transition: .25s;
+  font-weight: 500;
+  margin-bottom: 8px;
+  background-color: #fff;
+}
+
+.btn-submit:hover{
+  box-shadow: 2px 2px 0px #0e6f4a;
+  color: #0e6f4a;
+  border: 1px solid #0e6f4a;
+}
+
+.info-user .form-control{
+  border-radius: 0px;
+  background: transparent;
+  border: 1px solid #000;
+  box-shadow: 0px 1px 0px #fff;
+  color: rgb(0, 0, 0) !important;
+}

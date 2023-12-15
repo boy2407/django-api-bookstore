@@ -1,0 +1,253 @@
+
+.writer{
+  margin-top: 100px;
+}
+
+.card-text{
+  text-align: left;
+  text-align: justify;
+}
+
+.slide .card{
+  width: 300px;
+  height: auto;
+}
+
+.slide{
+  margin: 0px;
+}
+html {
+  box-sizing: border-box;
+}
+.lightbox{
+  display: none;
+}
+body{
+  border: 1px solid #999;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+.cf:before,
+.cf:after {
+  display: table;
+  content: ' ';
+}
+
+.cf:after {
+  clear: both;
+}
+
+.cf {
+  zoom: 1;
+}
+
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0;
+  padding: 10px;
+}
+
+figure a {
+  display: block;
+}
+
+mark {
+  padding: 0 5px;
+  background-color: #dddddd;
+}
+
+::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.site-content {
+  text-align: left;
+  width: 100%;
+  height: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding-right: 2%;
+  padding-left: 2%;
+  margin-bottom: 90px;
+  /* background-color:#ccc; */
+}
+
+.card {
+  width: 100%;
+  background-color: #fff;
+  text-align: left;
+  position: relative;
+  height: 100%;
+  box-shadow: 0px 2px 6px 0px rgba(204, 209, 217, .5);
+  border: 1px solid #E6E9ED;
+}
+
+.courses {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.course-item {
+  width: 300px;
+  padding-right: 2%;
+  padding-left: 2%;
+  margin-bottom: 30px;
+  /* ensuring proper layout*/
+  
+  float: left;
+}
+
+.course-heading {
+  font-weight: 500;
+  font-size: 12px;
+  color: #AAB2BD;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.course-info {
+  padding: 7%;
+  min-height: 140px;
+}
+
+.course-topic {
+  font-weight: 500;
+  color: #AAB2BD;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.course-topic.photo {
+  color: #673AB7;
+}
+
+.course-topic.webdesign {
+  color: #009688;
+}
+
+.course-topic.computer {
+  color: #2196F3;
+}
+
+.course-topic.code {
+  color: #4CAF50;
+}
+
+.course-topic.design {
+  color: #F44336;
+}
+
+.course-title {
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0 0 2%;
+}
+.course-paragraph{
+  font-size: 0.9em;
+  margin: 0 0 4%;
+}
+.course-meta {
+  color: #AAB2BD;
+  font-weight: 300;
+  font-size: 11px;
+  position: absolute;
+  left: 7%;
+  bottom: 2%;
+}
+
+.course-duration:before {
+  display: inline-block;
+  content: "•";
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.course-caption {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
+  font-size: 18px;
+  color: #AAB2BD;
+}
+.btn{
+      position: relative;
+    display: inline-block;
+    padding: 12px 30px 11px 30px;
+    /*margin: 0 16px 25px 0;*/
+    margin: 0 0 5px 0;
+    color: #333;
+    border: 1px solid #c6c6c6;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;   
+    -moz-box-shadow: 0 5px 0 0 #c6c6c6;
+    -webkit-box-shadow: 0 5px 0 0 #c6c6c6;
+    box-shadow: 0 5px 0 0 #c6c6c6;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;  
+    font-family: 'SourceSansProBold', 'Calibri', 'Arial narrow', sans-serif;  
+    font-size: 0.875em; /* 14px */
+    font-weight: 700;
+  margin-left:auto;
+  margin-right: auto;
+}
+
+#lightbox {
+			position:fixed; /* keeps the lightbox window in the current viewport */
+			top:0; 
+			left:0; 
+			width:100%; 
+			height:100%; 
+			background:rgba(28,25,25,0.8); 
+			text-align:center;
+		}
+		#lightbox p {
+			text-align:right; 
+			color:#fff; 
+			margin-right:px; 
+			font-size:12px; 
+		}
+		#lightbox img {
+			box-shadow:0 0 25px #111;
+			-webkit-box-shadow:0 0 25px #111;
+			-moz-box-shadow:0 0 25px #111;
+			max-width:940px;
+		}
+#lightbox #content{
+ width: 600px;
+  margin: 0 auto;
+   background:white;
+  color: #444;
+  padding: 40px;
+}
+#lightbox #content p{
+text-align: left;
+  font-size: 1em;
+  line-height: 1.5em;
+  color: #444;
+}
+#wrapper{
+  			width:1000px; 
+			margin:0 auto; 
+			border-radius:0 0 5px 5px;
+			-moz-border-radius:0 0 5px 5px;
+			-webkit-border-radius: 0 0 5px 5px;
+			background:#c9c9c9; 
+			border:1px solid #ccc; 
+			padding:25px; 
+			border-top:none; 
+			box-shadow:0 0 5px #ccc;
+			-moz-box-shadow:0 0 5px #ccc;
+			-webkit-box-shadow:0 0 5px #ccc;
+			text-align:left;
+}

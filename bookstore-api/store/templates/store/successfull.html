@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/bootstrap_5.3.2/css/bootstrap.min.css ' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/login.css ' %}">
+<body>
+    <section class="container">
+        <div class="noti-password text-center">
+            <br> <br>
+            <h2 class="noti-title"> <strong> ĐẶT HÀNG THÀNH CÔNG VUI LÒNG KIỂM TRA EMAIL </strong> </h2>
+            <img src="{% static 'assets/images/orther/active-register.jpg ' %}" class="img-password" alt="">
+            <hr>
+            <p> <strong><a href="{% url 'store:index' %}">Tiếp tục mua hàng </a></strong></p>
+        </div>
+    </section>
+    <script src="{% static 'assets/bootstrap_5.3.2/js/bootstrap.bundle.min.js ' %}"></script>
+    <script src="{% static 'assets/bootstrap_5.3.2/js/bootstrap.min.js ' %}"></script>
+    <script src="{% static 'assets/bootstrap_5.3.2/js/popper.min.js ' %}"></script>
+    <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/js_login/main.js' %}" type="text/javascript"></script>
+</body>
+</html>

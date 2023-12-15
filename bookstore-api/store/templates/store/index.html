@@ -1,0 +1,103 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load customfunction %}
+{% block container %}
+
+<section class="container" id="slide">
+    <div class="site-content cf">
+        <div class="courses cf" id="featured-courses">
+
+            {% for item in slide %}
+            <div class="course-item slide">
+                <img src="{{item.slideimg.url}}" alt="">
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<section class="section container" id="bestProduct">
+    <hr>
+    <div class="row text center">
+        <h1 class="tag-text">SẢN PHẨM BÁN CHẠY</h1>
+    </div>
+    <hr>
+    <!-- SLIDER SẢN PHẨM BÁN CHẠY -->
+    <div class="site-content cf" id="best-seller">
+        <div class="courses cf" id="best-seller-poducts">
+            {% for item in newbooks %}
+            <div class="course-item slide">
+                <div class="card h-100">
+                    <img class="card-img-top" src="{{item.coverpage.url}}" alt="...">
+                    <div class="card-body">
+
+                        <h6 class="card-title">{{item.name}}</h6>
+                        <p class="card-text">{{item.writer}}</p>
+
+                        {% if item.pricesale > 0 %}
+                        <div style="display: flex; justify-content:center;">
+                            <p class="text-decoration-line-through">{{ item.price|formatcurrency }} </p>
+                            <p class="card-text"> - {{ item.pricesale|formatcurrency }}</p>
+                        </div>
+                        {% else %}
+                        <div style="display: flex; justify-content:center;">
+                            <p class="text-decoration-line-through"></p>
+                            <p class="card-text">{{ item.price|formatcurrency }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <button class="buybtn" data-url="{% url 'store:book' id=item.id %}"><i class="fa-solid fa-money-check-dollar"></i>&nbsp;Mua ngay</button>
+                        <button class="cartbtn btnAddToCart" data-id="{{ item.id }}" ><i class="fa-solid fa-cart-shopping"></i>&nbsp;Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!--&lt;!&ndash; SẢN PHẨM NỘI BẬT &ndash;&gt;-->
+<section class="container" id="outstanding-produts">
+    <hr>
+    <div class="row text center">
+        <h1 class="tag-text">SẢN PHẨM NỔI BẬT</h1>
+    </div>
+    <hr>
+    <div class="site-content cf">
+        <div class="courses cf" id="outstanding-produts-1">
+            {% for item in newbooks %}
+            <div class="course-item slide">
+                <div class="card h-100">
+                    <img width="100%" height="100%" src="{{item.coverpage.url}} " class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h6 class="card-title">{{item.name}}</h6>
+                        <p class="card-text">{{item.writer}}</p>
+
+                        {% if item.pricesale > 0 %}
+                        <div style="display: flex; justify-content:center;">
+                            <p class="text-decoration-line-through">{{ item.price|formatcurrency }} </p>
+                            <p class="card-text"> - {{ item.pricesale|formatcurrency }}</p>
+                        </div>
+                        {% else %}
+                        <div style="display: flex; justify-content:center;">
+                            <p class="text-decoration-line-through"></p>
+                            <p class="card-text">{{ item.price|formatcurrency }}</p>
+                        </div>
+                        {% endif %}
+                        <hr>
+                        <button class="buybtn" data-url="{% url 'store:book' id=item.id %}"><i class="fa-solid fa-money-check-dollar"></i>&nbsp;Mua ngay</button>
+                        <button class="cartbtn btnAddToCart" data-id="{{ item.id }}" ><i class="fa-solid fa-cart-shopping"></i>&nbsp;Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+{% endblock%}
+{% block scripts %}
+<script src="{% static '/assets/js/index-handle.js' %}"></script>
+{% endblock %}

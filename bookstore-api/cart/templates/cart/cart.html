@@ -1,0 +1,190 @@
+{% extends 'store/base.html' %}
+{% load customfunction %}
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="{% static '/assets/css/cart.css' %}">
+{% endblock %}
+{% block container %}
+<div class="container">
+    <div class="row mt-100" id='load_data'>
+        <div class="col-xl-8">
+            <div class="card" style="max-width: 100%;">
+                <table class="table">
+                    <thead>
+                    <tr class="text-center">
+                        <th scope="col"></th>
+                        <th scope="col">Hình ảnh</th>
+                        <th scope="col">Tên sản phẩm</th>
+                        <th scope="col">Giá tiền</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Thành tiền</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody class="text-center">
+                    {% for item in cart %}
+                    {% with book=item.book %}
+                    <tr id="trow_{{ book.id }}">
+                        <td scope="row"><input type="checkbox" class="check-to-buy" name="vehicle1" value="Bike"></td>
+                        <td scope="row"><img src="{{ book.coverpage.url }}" alt=""></td>
+                        <td>{{ book.name }}</td>
+                        <td>
+                            <p class="card-text">{{ book.price|formatcurrency }}</p>
+                        </td>
+                        <td>
+                            <div class='main'>
+                                <button data-id="{{ book.id }}" class='down_count btnMinus' title='Down'><i id="_plus"
+                                                                                                            class="fa-solid fa-minus"></i>
+                                </button>
+                                <input class='counter' id="quantity_{{ book.id }}" type="text"
+                                       value='{{item.quantity}}'/>
+                                <button data-stock="{{ book.stock }}" data-id="{{ book.id }}" class='up_count btnPlus '
+                                        title='Up'><i id="_minus" class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </td>
+                        <td id="{{ book.id }}">{{ item.total_price|formatcurrency }}</td>
+                        <td>
+                            <button data-id="{{ book.id }}" class=' btnDelete '><i class="fa fa-trash-o"></i></button>
+                        </td>
+
+                    </tr>
+
+                    {% endwith %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row my-4">
+                <div class="col-sm-6">
+                    <a href="{% url 'store:index' %}" class="btn btn-link text-muted">
+                        <i class="mdi mdi-arrow-left me-1"></i> Tiếp tục mua sắm </a>
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end mt-2 mt-sm-0">
+                        <a href="{% url 'order:order-create' %}" class="btn btn-success">
+                            <i class="mdi mdi-cart-outline me-1"></i> Đặt hàng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- summary-->
+        <div class="col-xl-4">
+            <div class="mt-5 mt-lg-0" id="summary">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        summary()
+        $('body').on('click', '.btnPlus', function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            console.log(($(this).data('stock')))
+            var stock = parseInt($(this).data('stock'));
+            var val = $('#quantity_' + id).val();
+            var quantity = parseInt(val) + 1;
+            if (quantity <= stock) {
+                Update(id, quantity);
+                $('#quantity_' + id).val(quantity);
+            }
+        });
+
+
+        $('body').on('click', '.btnMinus', function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var val = $('#quantity_' + id).val();
+            var quantity = parseInt(val);
+            if (quantity > 1) {
+                quantity -= 1;
+                Update(id, quantity);
+                $('#quantity_' + id).val(quantity);
+            }
+        });
+
+        $('body').on('click', '.btnDelete', function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var conf = confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng không')
+            if (conf == true) {
+
+                $.ajaxSetup({
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'}
+                });
+
+                $.ajax({
+                    url: "{% url 'cart-remove' %}",
+                    type: 'POST',
+                    data: {id: id},
+                    success: function (rs) {
+                        if (rs.Success) {
+                            totalCart();
+                            $('#trow_' + id).remove();
+                            summary()
+                        }
+                    }
+                })
+            }
+        });
+
+        $('body').on('click', '.btnDeleteAll', function (e) {
+            e.preventDefault();
+            var conf = confirm('Bạn có chắc muốn xóa hết sản phẩm trong giỏ hàng không')
+            if (conf == true) {
+                DeleteAll();
+            }
+        });
+
+    })
+
+    function Update(id, quantity) {
+
+        $.ajaxSetup({
+            headers: {"X-CSRFToken": '{{ csrf_token }}'}
+        });
+
+        $.ajax({
+            url: "{% url 'cart-update' %}",
+            type: 'POST',
+            data: {id: id, quantity: quantity},
+            success: function (data) {
+                totalCart();
+                summary()
+                $("#" + (id.toString())).html(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error: ' + textStatus + ': ' + errorThrown);
+            }
+        })
+    }
+
+    function totalCart() {
+        $.ajax({
+            url: "{% url 'totalcart' %}",
+            success: function (data) {
+                $("#gettotalcart").html(data);
+                console.log(data)
+            }
+        })
+    }
+
+    function summary() {
+        $.ajax({
+            url: "{% url 'cart-summary' %}",
+            type: "GET",
+            success: function (data) {
+                $("#summary").html(data);
+            }
+        })
+    }
+
+
+</script>
+<script src="{% static '/assets/js/cart-handle.js' %}"></script>
+<script src="{% static '/assets/js/shopping-handle.js' %}"></script>
+{% endblock %}

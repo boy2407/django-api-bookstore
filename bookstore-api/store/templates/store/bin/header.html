@@ -1,0 +1,67 @@
+{% load static %}
+
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand text-30"  href="{% url 'store:index' %}">
+        <img src="{% static '/assets/logo.png' %}" style="max-width: 65px;" alt="">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'store:index' %}"><i class="fa fa-home"></i>&nbsp;&nbsp; Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{%url 'store:category' 1 %}" tabindex="-1"><i class="fa-solid fa-table-cells-large"></i></i>&nbsp;&nbsp;Thể Loại</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" tabindex="-1"><i class="fa-solid fa-clipboard-list"></i>&nbsp;&nbsp;Giới thiệu</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" tabindex="-1"><i class="fa-solid fa-phone"></i>&nbsp;&nbsp;Hỗ trợ</a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 rightside">
+           <form action="{% url 'search:search' %}" method="GET" class="d-flex">
+                    <div class="input-group search_box">
+                        <input type="text" class="form-control me-3" placeholder="Tìm kiếm ở đây..." name="search_book"
+                               value="{% if search %}{{search}}{% endif %}">
+                        <button class="mybtn" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+          <li class="nav-item">
+            <a class="nav-link" href="#" tabindex="-1"><i class="fa-solid fa-bell"></i></i><sup class="cart-num">&nbsp;1</sup></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{%url 'cart-details' %}" tabindex="-1"><i class="fa-solid fa-cart-shopping"></i><sup id="gettotalcart" class="cart-num">&nbsp;{{ cart|length }}</sup></a>
+          </li>
+
+             {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <button id="call-card" class="nav-link" tabindex="-1"><i class="fa-solid fa-circle-user"></i></button>
+            </li>
+             {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}" tabindex="-1"><i class="fa-solid fa-sign-in-alt"></i></a>
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="info-account" id="wait-call-card">
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        <a href="{% url 'profile' %}" class="list-group-item"><i class="fa-solid fa-circle-info"></i>&nbsp;&nbsp;Thông tin tài khoản</a>
+        <a href="{% url 'order:order-list' %}" class="list-group-item"><i class="fa-solid fa-clipboard-list"></i>&nbsp;&nbsp;Đơn hàng của bạn</a>
+      </ul>
+      <div class="card-footer">
+        <a href="{% url 'logout' %}"  class="list-group-item"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;&nbsp;Đăng xuất</a>
+      </div>
+    </div>
+  </div>
+

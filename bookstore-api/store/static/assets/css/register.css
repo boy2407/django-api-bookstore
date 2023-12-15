@@ -1,0 +1,32 @@
+@font-face {
+  font-family: roboto-reg;
+  src: url(/assets/fonts/Lato/OpenSans-Regular.ttf);
+}
+body{
+  font-family: roboto-reg;
+  overflow: hidden;
+}
+.noti-verification-failed{
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #000;
+  margin: 100px;
+  animation: an-frame 4s linear infinite
+}
+
+
+@keyframes an-frame {
+  0%{box-shadow: 0px 0px 5px 0px #ff7b00;}
+  25%{box-shadow: 2px 2px 5px 0px #d400ff;}
+  50%{box-shadow: -2px -2px 5px 0px #09ff00;}
+  75%{box-shadow: 2px 2px 5px 0px #00ccff;}
+  100%{box-shadow: 0px 0px 5px 0px #ff7b00;}
+}
+
+.img-failed{
+  max-width: 600px;
+}
+
+.noti-title{
+  color: #992503;
+}

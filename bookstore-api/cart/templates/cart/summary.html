@@ -1,0 +1,41 @@
+{% load customfunction %}
+<div class="card border shadow-none">
+	<div class="card-header bg-transparent border-bottom py-3 px-4">
+		<h5 class="font-size-16 mb-0">Chi tiết thanh toán</h5>
+	</div>
+	<div class="card-body p-4 pt-2">
+
+		<div class="table-responsive">
+			<table class="table mb-0">
+				<tbody>
+				<tr>
+					<td>Tạm tính:</td>
+					<td class="text-end">{{ cart.get_total_price|formatcurrency}}</td>
+				</tr>
+				<tr>
+					<td>Giảm giá:</td>
+					<td class="text-end">- {{ cart.get_total_discount|formatcurrency}}</td>
+				</tr>
+				<tr>
+					<td>Số lượng</td>
+					<td class="text-end">{{ cart|length }}</td>
+				</tr>
+				<tr>
+					<td>Phí giao hàng:</td>
+					<td class="text-end">{{ cost|shipping|formatcurrency }}</td>
+				</tr>
+				<tr>
+					<th>Tổng cộng:</th>
+					<td class="text-end">
+                        <span class="fw-bold">
+							{{cart.get_total_price|payabletotal:cart.get_total_discount|formatcurrency }}
+                        </span>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-- end table-responsive -->
+	</div>
+</div>
+</div>

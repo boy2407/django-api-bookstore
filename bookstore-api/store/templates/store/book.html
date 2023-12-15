@@ -1,0 +1,209 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load customfunction %}
+{% block container %}
+<link href="{% static '/assets/css/buy.css' %}" rel="stylesheet"/>
+
+<section class="container info-product">
+    <div class="row info-product-inner">
+        <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{book.coverpage.url}}" alt="..."/></div>
+        <div class="col-md-6">
+            <p class="book-title">{{ book.name }}</p>
+            <div class="feedback-star row">
+                <div class="col-5">
+                    <div class='rating'>
+                        {{ book.totalrating|averagerating:book.totalreview }}
+                        <a href='#getreview'><span class='totalrating'>{{ book.totalreview|add:-1 }} Reviews</span></a>
+                    </div>
+                </div>
+                <div class="col-8"></div>
+            </div>
+            <div class="small mb-1">
+                <span>Tình trạng:</span>
+                <span> {{ book.stock }}</span>
+            </div>
+            <br>
+            <p>Tác giả: <a href="{% url 'store:writer' book.writer.id %}">{{ book.writer }}</a></p>
+
+            <div class="fs-5 mb-4">
+                {% if book.pricesale > 0 %}
+                <span class="text-decoration-line-through book-price">{{ book.price|formatcurrency }}</span>
+                <span class="book-price-sale">{{ book.pricesale|formatcurrency }}</span>
+                {% else %}
+                <span>{{ book.price|formatcurrency }}</span>
+                {% endif %}
+            </div>
+            <p class="desciption"> {{ book.description }}</p>
+
+            <div class="d-flex">
+                <span class="text-sl">Số lượng:</span>
+                <div class='main'>
+                    <button id="plus" class='down_count btn-counter' title='Down'><i id="_plus"
+                                                                                     class="fa-solid fa-minus"></i>
+                    </button>
+                    <input class='counter' id="quantity_value" type="text" placeholder="value..." value='1'/>
+                    <button id="minus" class='up_count btn-counter' title='Up'><i id="_minus"
+                                                                                  class="fa-solid fa-plus"></i></button>
+                </div>
+
+                <button class="btnAddToCart cls-buy-btn" data-id="{{ book.id }}"><i
+                        class="fa-solid fa-cart-shopping"></i>&nbsp;Thêm vào giỏ hàng
+                </button>
+            </div>
+        </div>
+    </div>
+    <hr>
+</section>
+
+<section class="container leave-feedback">
+    <div class="feedback-star row">
+        <div class="col-5 star-feedback">
+            <span>Đánh giá:&nbsp;&nbsp;</span>
+            <button id="star-1" class="star-fb"><i class="fa-solid fa-star"></i></button>
+            <button id="star-2" class="star-fb"><i class="fa-solid fa-star"></i></button>
+            <button id="star-3" class="star-fb"><i class="fa-solid fa-star"></i></button>
+            <button id="star-4" class="star-fb"><i class="fa-solid fa-star"></i></button>
+            <button id="star-5" class="star-fb"><i class="fa-solid fa-star"></i></button>
+            <span id="star">&nbsp;&nbsp;0</span>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Để lại bình luận cho sản phẩm:</label>
+            <form action="" method="POST" class="needs-validation" novalidate="">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{form.review_star|as_crispy_field}}
+                </div>
+                <div class="form-group">
+                    {{ form.review_text|as_crispy_field }}
+                </div>
+                <div class="form-group">
+                    <button class="btn-cmt" type="submit">Bình luận</button>
+                </div>
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div {% if message.tags %} class=" noti-login text-center" {% endif %} style="color: red">
+                        <strong>Vui lòng đăng nhập để bình luận </strong>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!-- Người mua comment -->
+<section class="container leave-feedback">
+    <hr>
+    <h3>Các đánh giá sản phẩm</h3>
+    <div class="mb-3">
+
+        {% for lreview in rreview %}
+ <div class="feedback-star row card">
+        <div class="col-12 commented">
+                <img src="{% static '/assets/images/profile.png' %}"/>
+                <b> {{ lreview.customer }} </b>
+                <div class='rating'>
+                    {{ lreview.review_star|averagerating:1 }}
+                </div>
+                <div class="mb-3">
+                    <p>{{ lreview.review_text }}</p>
+                </div>
+
+                                <div class="given_review_date">
+                    <span style="color:#555;"> {{ lreview.created }}</span>
+                </div>
+                <p style="margin-top: 10px">  </p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!--            phân trang -->
+        <div class="d-pagination">
+            <ul class="pagination">
+                <!--                   kiểm tra Trang giữa-->
+
+                {% if rreview.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo;</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ book.previous_page_number }}">&laquo;</a>
+                </li>
+                {% endif %}
+
+                {% for ord in rreview.paginator.page_range %}
+                {% if rreview.number == ord %}
+                <li class="page-item active">
+                                        <span class="page-link">{{ ord }}
+
+                                        </span>
+                </li>
+                {% elif ord > rreview.number|add:'-3' and ord < rreview.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ ord }}">{{ ord }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {% if rreview.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ book.next_page_number }}">&raquo;</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ book.paginator.num_pages }}">&raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+<section class="container product-related">
+    <hr>
+    <div class="row text center">
+        <h1 class="tag-text">SẢN PHẨM LIÊN QUAN</h1>
+    </div>
+    <hr>
+    <!--Slider-->
+    <div class="site-content cf">
+        <div class="courses cf" id="featured-courses">
+            {% for item in rbooks %}
+            <div class="course-item slide">
+                <div class="card h-100">
+                    <img width="100%" height="100%" src="{{item.coverpage.url}} " class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h6 class="card-title">{{item.name}}</h6>
+
+                        {% if item.pricesale > 0 %}
+                        <div style="display: flex; justify-content:center;">
+                            <p class="text-decoration-line-through">{{ item.price|formatcurrency }} </p>
+                            <p class="card-text"> - {{ item.pricesale|formatcurrency }}</p>
+                        </div>
+                        {% else %}
+                        <div style="display: flex; justify-content:center;">
+                            <p class="text-decoration-line-through"></p>
+                            <p class="card-text">{{ item.price|formatcurrency }}</p>
+                        </div>
+                        {% endif %}
+                        <hr>
+                        <button class="buybtn" data-url="{% url 'store:book' id=item.id %}">Mua ngay</a></button>
+                        <button class="cartbtn  btnAddToCart" data-id="{{ item.id }}">Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+{% block scripts %}
+<script src="{% static '/assets/js/buy-handle.js' %}"></script>
+
+{% endblock %}

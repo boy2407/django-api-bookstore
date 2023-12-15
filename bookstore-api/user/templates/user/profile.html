@@ -1,0 +1,111 @@
+{% include "store/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/check_out.css' %}">
+{% endblock %}
+
+{% block container %}
+<!--                {{ address.address|as_crispy_field }}-->
+<!--                {{ address.city|as_crispy_field }}-->
+<!--                {{ address.district|as_crispy_field }}-->
+<form action="" method="POST" class="needs-validation" novalidate="">
+    {% csrf_token %}
+    <div class="container info-user">
+        <div class="row mt-100">
+            <h3 class="text-center tag-text"><strong>THÔNG TIN TÀI KHOẢN</strong></h3>
+            <hr>
+            <div class="col-2"></div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-signature"></i>First
+                        name</label>
+                    <input type="text" class="form-control" id="firstname" name="first_name"
+                           value="{{ user.first_name.value }}">
+                    {% if user.first_name.errors %}
+                    {% for error in user.first_name.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Email</label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Email"
+                           value="{% if user.email.value %}{{ user.email.value}}{% endif %}"/>
+                    {% for error in user.email.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+                <div class="mb-3">
+                    <label for="formGroupExampleInput" class="form-label"><i class="fa-solid fa-location-dot"></i>&nbsp;&nbsp;Địa
+                        chỉ</label>
+                    <input type="text" class="form-control" id="address" name="address"
+                           placeholder="Example input placeholder"
+                           value="{% if address.address.value %}{{ address.address.value }}{% endif %}">
+                    {% for error in address.address.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+
+                <div class="mb-3">
+                    <a href="{% url 'reset_password' %}">Đổi mật khẩu!</a>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-signature"></i>&nbsp;&nbsp;Last
+                        name</label>
+                    <input type="text" class="form-control" name="last_name" id="lname"
+                           value="{% if user.last_name.value %}{{ user.last_name.value }}{% endif %}">
+                    {% for error in user.last_name.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-phone"></i>&nbsp;&nbsp;Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="phone"
+                           value="{% if address.phone.value %}{{ address.phone.value}}{% endif %}"/>
+                    {% for error in address.phone.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-city"></i>&nbsp;&nbsp;Quận</label>
+                    {{ address.district }}
+                    {% for error in address.district.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-city"></i>&nbsp;&nbsp;Tỉnh</label>
+                    {{ address.city }}
+                    {% for error in address.city.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+            <div class="col-2"></div>
+        </div>
+        <div class="place-btn">
+            <button class="btn-submit" type="submit">Lưu thay đổi</button>
+        </div>
+
+        <!--        {% if messages %}-->
+        <!--        <ul class="messages">-->
+        <!--            {% for message in messages %}-->
+        <!--            <li-->
+        <!--            {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>-->
+        <!--            {% endfor %}-->
+        <!--        </ul>-->
+        <!--        {% endif %}-->
+
+    </div>
+</form>
+{% endblock %}

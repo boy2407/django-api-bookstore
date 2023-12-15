@@ -1,0 +1,37 @@
+body{
+  font-family: roboto-reg;
+}
+
+.choose-type{
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;  
+}
+.btn-type{
+  border: 1px solid #000;
+  background-color: #fff;
+  padding: 5px 6px 5px 6px;
+  margin-bottom: 5px;
+  margin-left: 4.5px;
+  color: #000;
+  transition: .25s;
+  text-decoration: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.btn-type:hover{
+  box-shadow: 2px 2px 0px #0e6f4a;
+  color: #0e6f4a;
+  border: 1px solid #0e6f4a;
+}
+
+.card-title{
+  font-size: 12px;
+}
+
+._pagination .pagination{
+  margin-top: 20px;
+  justify-content: center;
+  color: #0e6f4a !important;
+}

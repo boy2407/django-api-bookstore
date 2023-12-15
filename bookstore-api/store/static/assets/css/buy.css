@@ -1,0 +1,404 @@
+.writer{
+  margin-top: 100px;
+}
+
+.card-text{
+  text-align: center !important;
+  text-align: justify;
+}
+
+.slide .card{
+  width: 300px;
+  height: auto;
+}
+
+.slide{
+  margin: 0px;
+}
+html {
+  box-sizing: border-box;
+}
+.lightbox{
+  display: none;
+}
+body{
+  border: 1px solid #999;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+.cf:before,
+.cf:after {
+  display: table;
+  content: ' ';
+}
+
+.cf:after {
+  clear: both;
+}
+
+.cf {
+  zoom: 1;
+}
+
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0;
+  padding: 10px;
+}
+
+figure a {
+  display: block;
+}
+
+mark {
+  padding: 0 5px;
+  background-color: #dddddd;
+}
+
+::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.site-content {
+  text-align: left;
+  width: 100%;
+  height: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding-right: 2%;
+  padding-left: 2%;
+  margin-bottom: 90px;
+  /* background-color:#ccc; */
+}
+
+.card {
+  width: 100%;
+  background-color: #fff;
+  text-align: left;
+  position: relative;
+  height: 100%;
+  box-shadow: 0px 2px 6px 0px rgba(204, 209, 217, .5);
+  border: 1px solid #E6E9ED;
+}
+
+.courses {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.course-item {
+  width: 300px;
+  padding-right: 2%;
+  padding-left: 2%;
+  margin-bottom: 30px;
+  /* ensuring proper layout*/
+  
+  float: left;
+}
+
+.course-heading {
+  font-weight: 500;
+  font-size: 12px;
+  color: #AAB2BD;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.course-info {
+  padding: 7%;
+  min-height: 140px;
+}
+
+.course-topic {
+  font-weight: 500;
+  color: #AAB2BD;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.course-topic.photo {
+  color: #673AB7;
+}
+
+.course-topic.webdesign {
+  color: #009688;
+}
+
+.course-topic.computer {
+  color: #2196F3;
+}
+
+.course-topic.code {
+  color: #4CAF50;
+}
+
+.course-topic.design {
+  color: #F44336;
+}
+
+.course-title {
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0 0 2%;
+}
+.course-paragraph{
+  font-size: 0.9em;
+  margin: 0 0 4%;
+}
+.course-meta {
+  color: #AAB2BD;
+  font-weight: 300;
+  font-size: 11px;
+  position: absolute;
+  left: 7%;
+  bottom: 2%;
+}
+
+.course-duration:before {
+  display: inline-block;
+  content: "•";
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.course-caption {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
+  font-size: 18px;
+  color: #AAB2BD;
+}
+
+#lightbox {
+			position:fixed; /* keeps the lightbox window in the current viewport */
+			top:0; 
+			left:0; 
+			width:100%; 
+			height:100%; 
+			background:rgba(28,25,25,0.8); 
+			text-align:center;
+		}
+		#lightbox p {
+			text-align:right; 
+			color:#fff; 
+			margin-right:px; 
+			font-size:12px; 
+		}
+		#lightbox img {
+			box-shadow:0 0 25px #111;
+			-webkit-box-shadow:0 0 25px #111;
+			-moz-box-shadow:0 0 25px #111;
+			max-width:940px;
+		}
+#lightbox #content{
+ width: 600px;
+  margin: 0 auto;
+   background:white;
+  color: #444;
+  padding: 40px;
+}
+#lightbox #content p{
+text-align: left;
+  font-size: 1em;
+  line-height: 1.5em;
+  color: #444;
+}
+#wrapper{
+  			width:1000px; 
+			margin:0 auto; 
+			border-radius:0 0 5px 5px;
+			-moz-border-radius:0 0 5px 5px;
+			-webkit-border-radius: 0 0 5px 5px;
+			background:#c9c9c9; 
+			border:1px solid #ccc; 
+			padding:25px; 
+			border-top:none; 
+			box-shadow:0 0 5px #ccc;
+			-moz-box-shadow:0 0 5px #ccc;
+			-webkit-box-shadow:0 0 5px #ccc;
+			text-align:left;
+}
+/* .info-product-inner{
+  border: 1px solid #ccc;
+} */
+.info-product .row {
+  margin-top: 80px;
+  align-items: center;
+}
+
+.desciption{
+  text-align: justify;
+}
+
+.star-fb{
+  background-color: #fff;
+  border: none;
+  color: #888888;
+  transition: .25s;
+}
+
+.default-star{
+  color: yellow;
+}
+
+.book-title{
+  font-size: 25px;
+  font-weight: bold;
+  color: #0e6f4a;
+}
+
+.book-price-sale{
+  color: rgb(255, 0, 0)503 !important;
+}
+
+.cls-buy-btn{
+  background: white;
+  border: 1px solid black;
+  padding: 5px 10px 5px 10px;
+  margin-right: 10px;
+  transition: .25s;
+}
+
+.cls-buy-btn:hover{
+  box-shadow: 2px 2px 0px #0e6f4a;
+  color: #0e6f4a;
+  border: 1px solid #0e6f4a;
+}
+
+.text-sl{
+ display: flex;
+ align-items: center;
+}
+
+.main {
+  margin-left: 5px;
+}
+.counter {
+  width: 45px;  
+  border-radius: 0px !important;
+  text-align: center;
+}
+.up_count {
+  margin-bottom: 10px;  
+  margin-left: -4px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+} 
+.down_count {
+  margin-bottom: 10px;  
+  margin-right: -4px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.main{
+  display: flex;
+  align-items: center;
+  margin: 0px 10px 0px 10px;
+}
+
+.btn-counter{
+  margin-top: 10px;
+  margin-left: 2px;
+  margin-right: 2px;
+  background-color: #fff;
+  border: 1px solid;
+  padding: 0px 5px 0px 5px;
+}
+
+.counter{
+  border: 1px solid black;
+}
+
+.star-feedback{
+  display: flex;
+  align-items: center;
+}
+.leave-feedback{
+  margin-top: 30px;
+}
+
+.leave-feedback .form-control{
+  border: 1px solid #ccc;
+  resize: none;
+  color: black !important;
+}
+
+.leave-feedback .form-control:focus-visible{
+  outline: none;
+}
+
+.leave-feedback .form-control:focus{
+  outline: none;
+  box-shadow: none;
+}
+
+.info-product-inner .card-img-top{
+ border: 1px solid #ccc;
+}
+
+#star-1:hover{
+  color: yellow !important;
+}
+
+#star-2:hover{
+  color: yellow !important;
+}
+
+#star-3:hover{
+  color: yellow !important;
+}
+
+#star-4:hover{
+  color: yellow !important;
+}
+
+#star-5:hover{
+  color: yellow !important;
+}
+
+
+.btn-cmt{
+  margin-top: 20px;
+  background: white;
+  border: 1px solid black;
+  padding: 5px 10px 5px 10px;
+  margin-right: 10px;
+  transition: .25s;
+}
+
+.btn-cmt:hover{
+  box-shadow: 2px 2px 0px #0e6f4a;
+  color: #0e6f4a;
+  border: 1px solid #0e6f4a;
+}
+
+.div-btn-cmt{
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.avt-account{
+  max-width: 30px;
+}
+
+.noti-login {
+  margin-top: 10px;
+  color: red;
+  font-size: 20px;
+}
+
+._pagination .pagination{
+  justify-content: center;
+  color: #0e6f4a !important;
+}

@@ -1,0 +1,149 @@
+from django.contrib.auth import authenticate
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.models import User
+from .forms import RegistrationForm, UpdateUserForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_str
+from .token import user_tokenizer_generate
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import auth
+from django.template.loader import render_to_string
+from cart.models import Cart
+from order.models import Address
+from order.forms import AddressCreateForm
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .forms import RegistrationForm
+import json
+# Create your views here.
+@csrf_exempt
+def registration(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        print(f'registration: {data}')
+        form = RegistrationForm(data)
+        if form.is_valid():
+            user = form.save()
+            # Email verification setup (template)
+            current_site = get_current_site(request)
+            subject = 'Activate your account'
+            message = render_to_string('user/registration/email-verification.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': user_tokenizer_generate.make_token(user),
+            })
+            user.email_user(message=message, subject=subject)
+            return JsonResponse({'status': 'success', 'message': 'User created and verification email sent.'})
+        else:
+            for field, errors in form.errors.items():
+                return JsonResponse({'status': 'error', 'field': field, 'error': errors[0]}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+def email_verification(request, uidb64, token):
+    # uniqueid
+    unique_id = force_str(urlsafe_base64_decode(uidb64))
+    user = User.objects.get(pk=unique_id)
+    # Success
+    if user and user_tokenizer_generate.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('email-verification-success')
+    # Failed
+    else:
+        return redirect('email-verification-failed')
+def email_verification_sent(request):
+    return render(request, 'user/registration/email-verification-sent.html')
+def email_verification_success(request):
+    return render(request, 'user/registration/email-verification-success.html')
+def email_verification_failed(request):
+    return render(request, 'user/registration/email-verification-failed.html')
+
+@csrf_exempt
+def get_profile(request):
+    if request.method == 'GET':
+        customer = get_object_or_404(User, id=request.user.id)
+        addresss = Address.objects.filter(user_id=request.user.id).order_by('-create').first()
+
+        customer_serializer = UserSerializer(customer)
+        address_serializer = AddressSerializer(addresss)
+
+        return JsonResponse({'user': customer_serializer.data, 'address': address_serializer.data})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def update_profile(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(f'get_profile: {data}')
+        customer = get_object_or_404(User, id=request.user.id)
+        addresss = Address.objects.filter(user_id=request.user.id).order_by('-create').first()
+
+        fuser = UpdateUserForm(data, instance=customer)
+        faddress = AddressCreateForm(data, instance=addresss)
+
+        if fuser.is_valid() and faddress.is_valid():
+            fuser.save()
+            faddress.save()
+            return JsonResponse({'status': 'success', 'message': 'User profile updated.'})
+        else:
+            errors = {**fuser.errors, **faddress.errors}
+            for field, error in errors.items():
+                return JsonResponse({'status': 'error', 'field': field, 'error': error[0]}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            # Load the user's cart into the session
+            user_cart = Cart.objects.filter(user=user)
+            for item in user_cart:
+                request.session['cart'][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),
+                                                              'pricesale': str(item.pricesale)}
+
+            return JsonResponse({'status': 'success', 'message': 'User logged in.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Username and password doesn\'t match'}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def logout(request):
+    if request.method == 'POST':
+        try:
+            # Only save the cart into the database if it's not empty
+            if request.session['cart']:
+                # Save the user's cart into the database
+                user_cart = Cart.objects.filter(user=request.user, ordered=False)
+                user_cart.delete()  # Clear the old cart
+                for key, value in request.session['cart'].items():
+                    Cart.objects.create(user=request.user, book_id=key, quantity=value['quantity'], price=value['price'],
+                                        pricesale=value['pricesale'], ordered=False)
+
+            for key in list(request.session.keys()):
+                if key == 'session_key':
+                    continue
+                else:
+                    del request.session[key]
+        except KeyError:
+            pass
+
+        auth.logout(request)
+        return JsonResponse({'status': 'success', 'message': 'User logged out.'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)

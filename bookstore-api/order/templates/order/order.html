@@ -1,0 +1,208 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load customfunction %}
+{% load crispy_forms_tags %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'assets/css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/check_out.css' %}">
+{% endblock %}
+{% block container %}
+<!--<div class="row">-->
+<!--    <div class="col-md-8 order-md-1 cart_info">-->
+<!--        <h4 class="mb-3 mt-3">Shipping Address</h4>-->
+<!--        {% if messages %}-->
+<!--        <div class="messages">-->
+<!--            {% for message in messages %}-->
+<!--            <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--        {% endif %}-->
+<!--        <form action="" method="POST" class="needs-validation" novalidate="">-->
+<!--            {% csrf_token %}-->
+<!--            <div class="row">-->
+
+<!--                {{ order_form.name|as_crispy_field }}-->
+<!--                {{ order_form.email|as_crispy_field }}-->
+<!--                {{ order_form.phone|as_crispy_field }}-->
+<!--                {{ address_form.address|as_crispy_field }}-->
+<!--                {{ address_form.city|as_crispy_field }}-->
+<!--                {{ address_form.district|as_crispy_field }}-->
+<!--                {{ order_form.payment_method|as_crispy_field }}-->
+<!--            </div>-->
+
+<!--            <hr class="mb-4">-->
+<!--            <button class="btn btn-warning btn-block" type="submit" style="margin-bottom: 20px">Continue to checkout-->
+<!--            </button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--    <div class="col-xl-4">-->
+<!--        <div class="mt-5 mt-lg-0" id="summary">-->
+<!--            <div class="card border shadow-none">-->
+<!--                <div class="card-header bg-transparent border-bottom py-3 px-4">-->
+<!--                    <h5 class="font-size-16 mb-0">Chi tiết thanh toán</h5>-->
+<!--                </div>-->
+<!--                <div class="card-body p-4 pt-2">-->
+
+<!--                    <div class="table-responsive">-->
+<!--                        <table class="table mb-0">-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td>Tạm tính:</td>-->
+<!--                                <td class="text-end">{{ cart.get_total_price|formatcurrency}}</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Giảm giá:</td>-->
+<!--                                <td class="text-end">- {{ cart.get_total_discount|formatcurrency}}</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Số lượng</td>-->
+<!--                                <td class="text-end">{{ cart|length }}</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Phí giao hàng:</td>-->
+<!--                                <td class="text-end">{{ cost|shipping|formatcurrency }}</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <th>Tổng cộng:</th>-->
+<!--                                <td class="text-end">-->
+<!--												<span class="fw-bold">-->
+<!--													{{cart.get_total_price|payabletotal:cart.get_total_discount|formatcurrency }}-->
+<!--												</span>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; end table-responsive &ndash;&gt;-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<form action="" method="POST" class="needs-validation" novalidate="">
+    <div class="container info-user">
+        <div class="row mt-100">
+            <hr>
+            <h3 class="text-center tag-text"><strong>THÔNG TIN THANH TOÁN & GIAO HÀNG</strong></h3>
+            <hr>
+
+            <div class="col-1"></div>
+            <div class="col-5">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="formGroupExampleInput" class="form-label"><i class="fa-solid fa-user"></i>&nbsp;&nbsp;
+                        Tên người nhận</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder=" Tên người nhận"
+                           value="{% if order_form.name.value %}{{ order_form.name.value}}{% endif %}"/>
+                    {% for error in order_form.name.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-phone"></i>&nbsp;&nbsp;Số
+                        điện thoại</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Số điện thoại"
+                           value="{% if address_form.phone.value %}{{ address_form.phone.value}}{% endif %}"/>
+                    {% for error in address_form.phone.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Email</label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Email"
+                           value="{% if order_form.email.value %}{{ order_form.email.value}}{% endif %}"/>
+                    {% for error in order_form.email.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="formGroupExampleInput" class="form-label"><i class="fa-solid fa-location-dot"></i>&nbsp;&nbsp;Địa
+                        chỉ</label>
+                    <input type="text" class="form-control" id="address" placeholder="Địa chỉ" name = "address"
+                           value="{% if address_form.address.value %}{{ address_form.address.value}}{% endif %}"/>
+                    {% for error in address_form.address.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-city"></i>&nbsp;&nbsp;Quận</label>
+                    {{ address_form.district }}
+                    {% for error in address_form.district.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                    <!--                <input type="text" class="form-control" id="district" placeholder="Quận"-->
+                    <!--                       value="{% if order_form.district.value %}{{ order_form.district.value}}{% endif %}"/>-->
+                </div>
+                <div class="mb-3">
+                    <label for="formGroupExampleInput2" class="form-label"><i class="fa-solid fa-city"></i>&nbsp;&nbsp;Tỉnh</label>
+                    {{ address_form.city }}
+                    {% for error in address_form.city.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                    <!--                <input type="text" class="form-control" id="city" placeholder="Quận"-->
+                    <!--                       value="{% if order_form.city.value %}{{ order_form.district.value}}{% endif %}"/>-->
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-4">
+                <div class="mt-5 mt-lg-0" id="summary">
+                    <div class="card border shadow-none">
+                        <div class="card-header bg-transparent border-bottom py-3 px-4">
+                            <h5 class="font-size-16 mb-0">Chi tiết thanh toán</h5>
+                        </div>
+                        <div class="card-body p-4 pt-2">
+
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <tbody>
+                                    <tr>
+                                        <td>Tạm tính:</td>
+                                        <td class="text-end">{{ cart.get_total_price|formatcurrency}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Giảm giá:</td>
+                                        <td class="text-end">- {{ cart.get_total_discount|formatcurrency}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Số lượng</td>
+                                        <td class="text-end">{{ cart|length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phí giao hàng:</td>
+                                        <td class="text-end">{{ cost|shipping|formatcurrency }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tổng cộng:</th>
+                                        <td class="text-end">
+												<span class="fw-bold">
+													{{cart.get_total_price|payabletotal:cart.get_total_discount|formatcurrency }}
+												</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- end table-responsive -->
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check mt-10">
+                    {{ order_form.payment_method }}
+                                        {% for error in order_form.payment_method.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                    <button class="btn-submit text-end" type="submit">Thanh toán</button>
+                </div>
+                <div class="col-1"></div>
+            </div>
+
+        </div> </div>
+</form>
+{% endblock %}

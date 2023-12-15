@@ -1,0 +1,42 @@
+@font-face {
+  font-family: roboto-reg;
+  src: url(/assets/fonts/Lato/OpenSans-Regular.ttf);
+}
+body{
+  font-family: roboto-reg;
+  overflow: hidden;
+}
+.noti-password{
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #000;
+  margin: 5%;
+  animation: an-frame 4s linear infinite
+}
+
+@keyframes an-frame {
+  0%{box-shadow: 0px 0px 5px 0px #ff7b00;}
+  25%{box-shadow: 2px 2px 5px 0px #d400ff;}
+  50%{box-shadow: -2px -2px 5px 0px #09ff00;}
+  75%{box-shadow: 2px 2px 5px 0px #00ccff;}
+  100%{box-shadow: 0px 0px 5px 0px #ff7b00;}
+}
+
+.img-password{
+  max-width: 600px;
+}
+
+.btnSubmit{
+  background-color: #fff;
+  border: 1px solid #000;
+  margin: 10px;
+  padding: 5px 10px 5px 10px;
+}
+
+.btnSubmit:hover{
+  animation: an-frame 2s linear infinite
+}
+
+.noti-title{
+  color: #992503;
+}

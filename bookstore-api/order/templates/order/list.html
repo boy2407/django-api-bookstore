@@ -1,0 +1,49 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load customfunction %}
+{% load crispy_forms_tags %}
+{% include "store/base.html" %}
+
+{% block container %}
+
+
+  <section class="container order-list mt-70">
+    <hr>
+    <div class="row text center">
+      <h1 class="tag-text">DANH SÁCH ĐƠN HÀNG CỦA BẠN</h1>
+    </div>
+    <hr>
+    <table class="table table-bordered text-center">
+      <thead>
+        <tr>
+          <th scope="col" class="bg-head">#</th>
+          <th scope="col" class="bg-head">Mã đơn hàng</th>
+          <th scope="col" class="bg-head">Số lượng</th>
+          <th scope="col" class="bg-head">Tổng Tiền</th>
+          <th scope="col" class="bg-head">Trạng thái</th>
+          <th scope="col" class="bg-head">Ngày đặt</th>
+        </tr>
+      </thead>
+      <tbody>
+{% for item in order %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>225500{{ item.id }}</td>
+        <td>{{ item.totalbook}}</td>
+        <td>{{ item.payable|formatcurrency  }}</td>
+
+        {% if item.paid == True %}
+        <td><div class="">Thành công</div></td>
+        {% else %}
+        <td><div class="isprocess">Đang xử lý</div></td>
+        {% endif %}
+
+        <td>{{ item.create|date:"d/m/Y H:i" }}</td>
+    </tr>
+{% endfor %}
+
+
+
+    </table>
+  </section>
+{% endblock %}
