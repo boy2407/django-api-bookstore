@@ -110,6 +110,7 @@ def order_create(request):
         if len(cart)  > 0:
             return render(request, 'order/order.html', {"order_form": order_form, "address_form": address_form})
         else:
+
             return redirect('store:index')
 
     else:
