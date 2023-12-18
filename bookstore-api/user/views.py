@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.middleware.csrf import rotate_token
 from django.shortcuts import render
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import User
@@ -13,11 +15,15 @@ from django.contrib.auth.models import auth
 from django.template.loader import render_to_string
 from cart.models import Cart
 from order.models import Address
-from order.forms import AddressCreateForm
+from order.serializers import AddressSerializer
+from .serializers import UserSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .forms import RegistrationForm
+
+
 import json
+from django.forms.models import model_to_dict
 # Create your views here.
 @csrf_exempt
 def registration(request):
@@ -64,41 +70,55 @@ def email_verification_success(request):
 def email_verification_failed(request):
     return render(request, 'user/registration/email-verification-failed.html')
 
+
+
+
+@login_required
 @csrf_exempt
 def get_profile(request):
     if request.method == 'GET':
         customer = get_object_or_404(User, id=request.user.id)
         addresss = Address.objects.filter(user_id=request.user.id).order_by('-create').first()
 
-        customer_serializer = UserSerializer(customer)
-        address_serializer = AddressSerializer(addresss)
+        if customer is not None and addresss is not None:
+            customer_serializer = UserSerializer(model_to_dict(customer))
+            address_serializer = AddressSerializer(model_to_dict(addresss))
 
-        return JsonResponse({'user': customer_serializer.data, 'address': address_serializer.data})
+            return JsonResponse({'user': customer_serializer.data, 'address': address_serializer.data})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'User or address not found.'}, status=404)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 
+@login_required
 @csrf_exempt
 def update_profile(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(f'get_profile: {data}')
         customer = get_object_or_404(User, id=request.user.id)
         addresss = Address.objects.filter(user_id=request.user.id).order_by('-create').first()
 
-        fuser = UpdateUserForm(data, instance=customer)
-        faddress = AddressCreateForm(data, instance=addresss)
+        # Nếu address không tồn tại, tạo mới
+        if addresss is None:
+            addresss = Address(user=customer)
+
+        fuser = UserSerializer(customer, data=data)
+        faddress = AddressSerializer(addresss, data=data)
 
         if fuser.is_valid() and faddress.is_valid():
             fuser.save()
             faddress.save()
             return JsonResponse({'status': 'success', 'message': 'User profile updated.'})
         else:
-            errors = {**fuser.errors, **faddress.errors}
+            errors = {}
+            if not fuser.is_valid():
+                errors = {**errors, **fuser.errors}
+            if not faddress.is_valid():
+                errors = {**errors, **faddress.errors}
             for field, error in errors.items():
                 return JsonResponse({'status': 'error', 'field': field, 'error': error[0]}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
-
 
 @csrf_exempt
 def login(request):
@@ -110,6 +130,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
+            rotate_token(request)  # Generate a new CSRF token
             # Load the user's cart into the session
             user_cart = Cart.objects.filter(user=user)
             for item in user_cart:

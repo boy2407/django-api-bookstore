@@ -19,8 +19,6 @@ def index(request):
         "discountbooks":discountbooks
     }
     return render(request, 'store/index.html', context)
-
-
 def get_book(request, id):
 
     review = ReviewForm(request.POST or None)
@@ -59,15 +57,12 @@ def get_book(request, id):
     }
 
     return render(request, "store/book.html", context)
-
-
 def get_book_category(request,id):
     book_ = Book.objects.filter(category_id=id)
     paginator = Paginator(book_, 5)
     page = request.GET.get('page')
     book = paginator.get_page(page)
     return render(request, "store/category.html", {"book": book})
-
 def get_writer(request, id):
     writer = get_object_or_404(Writer, id = id)
     books =Book.objects.filter(writer_id=writer.id)
