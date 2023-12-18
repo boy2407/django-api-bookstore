@@ -1,31 +1,19 @@
-from django.shortcuts import render
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import JsonResponse
+from rest_framework.generics import ListAPIView
 from store.models import Book, Category, Writer
-# truy vấn
-from django.db.models import Q
-from django.db.models.functions import Lower
+from store.serializers import BookSerializer
+from rest_framework.filters import SearchFilter
+class BookSearchView(ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'category__name', 'writer__name']
 
-def search(request):
-    search = request.GET.get('search_book')
-    books = Book.objects.all()
-    if search:
-        search = search.lower()
-        books = books.annotate(
-            lower_name=Lower('name'),
-            lower_category_name=Lower('category__name'),
-            lower_writer_name=Lower('writer__name'),
-        ).filter(
-            Q(lower_name__icontains=search)|
-			Q(lower_category_name__icontains=search)|
-            Q(lower_writer_name__icontains=search)
-        )
-    paginator = Paginator(books, 5)
-    page = request.GET.get('page')
-    books = paginator.get_page(page)
-    context = {
-        "book": books,
-        "search": search,
-    }
-    return render(request, 'store/category.html', context)
-
-
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({'status': 'success', 'data': serializer.data})
+        serializer = self.get_serializer(queryset, many=True)
+        return JsonResponse({'status': 'success', 'data': serializer.data})
