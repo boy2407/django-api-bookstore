@@ -139,7 +139,7 @@ def login(request):
 
             return JsonResponse({'status': 'success', 'message': 'User logged in.'})
         else:
-            return JsonResponse({'status': 'error', 'message': 'Username and password doesn\'t match'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Tài khỏa hoặc mật khẩu không trùng khớp'}, status=200)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 

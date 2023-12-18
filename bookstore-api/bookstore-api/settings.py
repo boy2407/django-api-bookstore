@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-hed9-q-6s-^_i0aq&q*uah^@#@lmaqs$^#=$r49ma2@a92p0u2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.11']
 
 # Application definition
 
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'corsheaders',
     'store',
     'user',
     'search',
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'bookstore-api.urls'
@@ -131,14 +133,13 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_ROOT = BASE_DIR / 'static/media/'
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # setting bootstrap 4
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
+CORS_ALLOW_ALL_ORIGINS = True
 # Email configuration settings:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -148,7 +149,7 @@ EMAIL_USE_TLS = 'True'
 EMAIL_HOST_USER = 'nguyentrongnghiadap2020@gmail.com'
 EMAIL_HOST_PASSWORD = 'hgbj btns tnhf kges'  # - Enter your app password
 
-VNPAY_TMN_CODE ='GHP8BKE3'
+VNPAY_TMN_CODE = 'GHP8BKE3'
 VNPAY_HASH_SECRET_KEY = 'KWFOVDFGJCLEMWWBRCPRVQDXCHNDHILX'
 VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
 VNPAY_RETURN_URL = 'http://localhost:8000/vnpay/payment_return'
