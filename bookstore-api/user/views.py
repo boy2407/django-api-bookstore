@@ -10,7 +10,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
 from .token import user_tokenizer_generate
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import auth
 from django.template.loader import render_to_string
 from cart.models import Cart
@@ -20,11 +19,12 @@ from .serializers import UserSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .forms import RegistrationForm
-
-
 import json
 from django.forms.models import model_to_dict
-# Create your views here.
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import get_user_model
+
+
 @csrf_exempt
 def registration(request):
     if request.method == 'POST':
@@ -47,7 +47,7 @@ def registration(request):
             return JsonResponse({'status': 'success', 'message': 'User created and verification email sent.'})
         else:
             for field, errors in form.errors.items():
-                return JsonResponse({'status': 'error', 'field': field, 'error': errors[0]}, status=400)
+                return JsonResponse({'status': 'error', 'message': 'error field','field': field, 'error': errors[0]}, status=200)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 
@@ -126,6 +126,10 @@ def login(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
+        user = User.objects.get(username=username)
+        if user.is_active is False:
+            return JsonResponse({'status': 'error', 'message': 'Tài khoản chưa kích hoạt'+'\n'+'Vui lòng kiểm tra email của bạn'}, status=200)
+
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -136,7 +140,6 @@ def login(request):
             for item in user_cart:
                 request.session['cart'][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),
                                                               'pricesale': str(item.pricesale)}
-
             return JsonResponse({'status': 'success', 'message': 'User logged in.'})
         else:
             return JsonResponse({'status': 'error', 'message': 'Tài khỏa hoặc mật khẩu không trùng khớp'}, status=200)
