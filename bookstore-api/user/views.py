@@ -126,23 +126,31 @@ def login(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
-        user = User.objects.get(username=username)
-        if user.is_active is False:
-            return JsonResponse({'status': 'error', 'message': 'Tài khoản chưa kích hoạt'+'\n'+'Vui lòng kiểm tra email của bạn'}, status=200)
+        # user = get_object_or_404(User, username=username)
 
-        user = authenticate(request, username=username, password=password)
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
 
-        if user is not None:
-            auth.login(request, user)
-            rotate_token(request)  # Generate a new CSRF token
-            # Load the user's cart into the session
-            user_cart = Cart.objects.filter(user=user)
-            for item in user_cart:
-                request.session['cart'][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),
-                                                              'pricesale': str(item.pricesale)}
-            return JsonResponse({'status': 'success', 'message': 'User logged in.'})
+            if user.is_active is False:
+                return JsonResponse({'status': 'error',
+                                            'message': 'Tài khoản chưa kích hoạt' + '\n' + 'Vui lòng kiểm tra email của bạn'},
+                                            status=200)
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                auth.login(request, user)
+                rotate_token(request)  # Generate a new CSRF token
+                # Load the user's cart into the session
+                user_cart = Cart.objects.filter(user=user)
+                for item in user_cart:
+                    request.session['cart'][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),
+                                                                  'pricesale': str(item.pricesale)}
+                return JsonResponse({'status': 'success', 'message': 'Đăng nhập thành công'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Mật khẩu không trùng khớp'}, status=200)
         else:
-            return JsonResponse({'status': 'error', 'message': 'Tài khỏa hoặc mật khẩu không trùng khớp'}, status=200)
+             # Người dùng không tồn tại, xử lý tình huống này
+             return JsonResponse({'status': 'error', 'message': 'Tài khỏa của bạn không tồn tại'}, status=200)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 
