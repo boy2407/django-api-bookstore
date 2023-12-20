@@ -145,7 +145,7 @@ def login(request):
                 for item in user_cart:
                     request.session['cart'][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),
                                                                   'pricesale': str(item.pricesale)}
-                return JsonResponse({'status': 'success', 'message': 'Đăng nhập thành công'})
+                return JsonResponse({'status': 'success', 'message': 'Đăng nhập thành công'},status=200)
             else:
                 return JsonResponse({'status': 'error', 'message': 'Mật khẩu không trùng khớp'}, status=200)
         else:
