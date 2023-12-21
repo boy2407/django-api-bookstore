@@ -1,48 +1,58 @@
+from _decimal import Decimal
+from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
+from requests import Response
+from rest_framework.views import APIView
 from .cart import Cart
-from store.models import Book
-
-
-# Create your views here.
-def cart_add(request):
-    if request.POST:
+from store.serializers import  BookSerializer
+from store.models import  Book
+class CartAdd(APIView):
+    def post(self, request):
         cart = Cart(request)
-        id = int(request.POST.get('id'))
-        quantity = int(request.POST.get('quantity'))
-        book = get_object_or_404(Book, id=id)
+        id = int(request.data.get('id'))
+        quantity = int(request.data.get('quantity'))
+        try:
+            book = Book.objects.get(id=id)
+        except Book.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': "Sách không tồn tại"}, status=200)
+
         cart.add(book=book, quantity=quantity)
         count = cart.__len__()
-        return JsonResponse({'Success': True,
-                             'msg': "Thêm sản phẩm thành công",
-                             'count': count,
-                             })
+        print(count)
+        for item in cart :
+           print(str(f"id :{item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} "))
+        return JsonResponse({'status': 'success', 'message': "Thêm sản phẩm thành công", }, status=200)
 
-    return JsonResponse({'Success': False,
-                         'msg': "Thêm hàng thất bại",
-                         })
+class CartUpdate(APIView):
+    def post(self, request):
+        cart = Cart(request)
+        id = int(request.data.get('id'))
+        quantity = int(request.data.get('quantity'))
 
+        try:
+            book = Book.objects.get(id=id)
+        except Book.DoesNotExist:
+            return JsonResponse({'status': 'success', 'message': "Sách không tồn tại"}, status=200)
 
-def cart_update(request):
-    cart = Cart(request)
-    id_str = request.POST.get('id')
-    if id_str is not None:
-        id = int(id_str)
-        quantity = int(request.POST.get('quantity'))
-        book = get_object_or_404(Book, id=id)
         cart.update(book=book, quantity=quantity)
-        price = (book.price * quantity)
-        return render(request, 'cart/price.html', {"price":price})
+        count = cart.__len__()
+        print(count)
 
+        return JsonResponse({'status': 'success', 'message': "Thêm sản phẩm thành công"}, status=200)
 
-def cart_delete(request):
-    cart = Cart(request)
-    id = int(request.POST.get('id'))
-    book = get_object_or_404(Book, id=id)
-    cart.delete(book=book)
-    return JsonResponse({'Success': True,
-                         'msg': "Xóa phẩm thành công",
-                         })
+class CartDelete(APIView):
+    def post(self, request):
+        cart = Cart(request)
+        id = int(request.data.get('id'))
+
+        try:
+            book = Book.objects.get(id=id)
+        except Book.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': "Sách không tồn tại"}, status=200)
+
+        cart.delete(book=book)
+        return JsonResponse({'status': 'success', 'message': "Xóa phẩm thành công"}, status=200)
 
 
 def item_total_price(request):
