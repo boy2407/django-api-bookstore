@@ -1,5 +1,6 @@
 from decimal import Decimal
-from store.models import Book
+from store.serializers import  BookSerializer
+from store.models import  Book
 from django.conf import settings
 
 class Cart(object):
@@ -40,20 +41,22 @@ class Cart(object):
             self.save()
 
     """  """
+
     def __iter__(self):
         book_ids = self.cart.keys()
         books = Book.objects.filter(id__in=book_ids)
 
         for book in books:
-            self.cart[str(book.id)]['book'] = book
+            book_serializer = BookSerializer(book)
+            self.cart[str(book.id)]['book'] = book_serializer.data
 
         for item in self.cart.values():
-            item['price'] = Decimal(item['price'])
-            item['pricesale'] = Decimal(item['pricesale'])
-            if item['pricesale'] > 0:
-                item['total_price'] = item['pricesale'] * item['quantity']
+            item['price'] = str(Decimal(item['price']))
+            item['pricesale'] = str(Decimal(item['pricesale']))
+            if item['pricesale'] > '0':
+                item['total_price'] = str(Decimal(item['pricesale']) * int(item['quantity']))
             else:
-                item['total_price'] = item['price'] * item['quantity']
+                item['total_price'] = str(Decimal(item['price']) * int(item['quantity']))
             yield item
 
 

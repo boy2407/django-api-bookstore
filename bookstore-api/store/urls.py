@@ -9,8 +9,10 @@ urlpatterns = ([
 
                    path('book/<int:pk>/', BookDetail.as_view(), name='book-detail'),
                    path('books-by-category/<int:category_id>/', BooksByCategory.as_view(), name='books-by-category'),
-
+                   path('new-books/', NewBooks.as_view(), name='new-books'),
+                   path('best-seller-books/', BestSellerBook.as_view(), name='best-seller-books'),
                    path('books-by-writer/<int:writer_id>/', BooksByWriter.as_view(), name='books-by-writer'),
+
                    path('writer/<int:pk>/', WriterDetail.as_view(), name='books-by-writer'),
 
                    path('categories/', CategoryList.as_view(), name='category-list'),
