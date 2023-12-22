@@ -10,7 +10,7 @@ class Cart(models.Model):
     pricesale = models.DecimalField(max_digits=10, decimal_places=2)
     ordered = models.BooleanField(default=False)
     def __str__(self):
-        return f'{self.quantity} of {self.book.title} by {self.user.username}'
+        return f'{self.quantity} of {self.book.name} by {self.user.username}'
 
 
 # Create your models here.

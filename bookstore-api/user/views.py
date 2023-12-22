@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.middleware.csrf import rotate_token
+from django.middleware.csrf import rotate_token, get_token
 from django.shortcuts import render
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import User
@@ -119,7 +119,6 @@ def update_profile(request):
                 return JsonResponse({'status': 'error', 'field': field, 'error': error[0]}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
-
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
@@ -141,11 +140,13 @@ def login(request):
                 auth.login(request, user)
                 rotate_token(request)  # Generate a new CSRF token
                 # Load the user's cart into the session
+
                 user_cart = Cart.objects.filter(user=user)
+                if not request.session.get(str(user.id)):
+                    request.session[str(user.id)] = {}
                 for item in user_cart:
-                    request.session['cart'][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),
-                                                                  'pricesale': str(item.pricesale)}
-                return JsonResponse({'status': 'success', 'message': 'Đăng nhập thành công'},status=200)
+                    request.session[str(user.id)][str(item.book.id)] = {'quantity': item.quantity, 'price': str(item.price),'pricesale': str(item.pricesale)}
+                return JsonResponse({'csrfToken': get_token(request),'status': 'success', 'message': 'Đăng nhập thành công'},status=200)
             else:
                 return JsonResponse({'status': 'error', 'message': 'Mật khẩu không trùng khớp'}, status=200)
         else:
@@ -154,18 +155,21 @@ def login(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 
+
+@login_required
 @csrf_exempt
 def logout(request):
     if request.method == 'POST':
         try:
             # Only save the cart into the database if it's not empty
-            if request.session['cart']:
+            if str(request.user.id) in request.session:
+                print("user có cart")
                 # Save the user's cart into the database
                 user_cart = Cart.objects.filter(user=request.user, ordered=False)
                 user_cart.delete()  # Clear the old cart
-                for key, value in request.session['cart'].items():
-                    Cart.objects.create(user=request.user, book_id=key, quantity=value['quantity'], price=value['price'],
-                                        pricesale=value['pricesale'], ordered=False)
+                for key, value in request.session[str(request.user.id)].items():
+                    Cart.objects.create(user=request.user, book_id=key, quantity=value['quantity'], price=value['price'],pricesale=value['pricesale'], ordered=False)
+
 
             for key in list(request.session.keys()):
                 if key == 'session_key':

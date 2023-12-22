@@ -1,12 +1,20 @@
-from _decimal import Decimal
-from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
-from requests import Response
 from rest_framework.views import APIView
 from .cart import Cart
-from store.serializers import  BookSerializer
-from store.models import  Book
+from store.models import Book
+from rest_framework import status
+class GetCart(APIView):
+    def get(self, request):
+        try:
+            cart = Cart(request)
+            for item in cart:
+                print(
+                    str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
+            return JsonResponse({'status': 'success', 'message': 'success cart', 'cart': cart.get_cart()},
+                                status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class CartAdd(APIView):
     def post(self, request):
         cart = Cart(request)
@@ -20,9 +28,12 @@ class CartAdd(APIView):
         cart.add(book=book, quantity=quantity)
         count = cart.__len__()
         print(count)
-        for item in cart :
-           print(str(f"id :{item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} "))
+        for item in cart:
+            print(
+                str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
+
         return JsonResponse({'status': 'success', 'message': "Thêm sản phẩm thành công", }, status=200)
+
 
 class CartUpdate(APIView):
     def post(self, request):
@@ -41,6 +52,7 @@ class CartUpdate(APIView):
 
         return JsonResponse({'status': 'success', 'message': "Thêm sản phẩm thành công"}, status=200)
 
+
 class CartDelete(APIView):
     def post(self, request):
         cart = Cart(request)
@@ -53,26 +65,6 @@ class CartDelete(APIView):
 
         cart.delete(book=book)
         return JsonResponse({'status': 'success', 'message': "Xóa phẩm thành công"}, status=200)
-
-
-def item_total_price(request):
-    return render(request, 'cart/newTotalItem.html')
-
-
-def cart_summary(request):
-    return render(request, 'cart/summary.html')
-
-
-def total_cart(request):
-    return render(request, 'cart/totalcart.html')
-
-
-def cart_details(request):
-    cart = Cart(request)
-    context = {
-        "cart": cart,
-    }
-    return render(request, 'cart/cart.html', context)
 
 
 def cart_del(request):

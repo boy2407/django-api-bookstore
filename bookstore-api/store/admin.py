@@ -22,9 +22,9 @@ admin.site.register(Writer, AddWriter)
 
 
 class AddBook(admin.ModelAdmin):
-    list_display = ['name', 'price', 'stock', 'status', 'created', 'updated']
+    list_display = ['name','price','pricesale', 'stock', 'status', 'created', 'updated']
     list_filter = ['status', 'created', 'updated', 'category', 'writer']
-    list_editable = ['price', 'stock', 'status']
+    list_editable = ['price', 'pricesale', 'stock', 'status']
     prepopulated_fields = {'slug': ('name',)}
 
     def prices(self, obj):
