@@ -14,7 +14,7 @@ class BookDetail(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        return JsonResponse({'status': 'success', 'data': serializer.data})
+        return JsonResponse({'status': 'success', 'book': serializer.data} ,status=200)
 
 
 class BooksByCategory(generics.ListAPIView):

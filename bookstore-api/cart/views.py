@@ -1,3 +1,5 @@
+from _pydecimal import Decimal
+
 from django.http import JsonResponse, HttpResponse
 from rest_framework.views import APIView
 from .cart import Cart
@@ -7,9 +9,16 @@ class GetCart(APIView):
     def get(self, request):
         try:
             cart = Cart(request)
+
             for item in cart:
-                print(
-                    str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
+                if item['pricesale'] > '0':
+                    item['total_price'] = str(Decimal(item['pricesale']) * int(item['quantity']))
+                else:
+                    item['total_price'] = str(Decimal(item['price']) * int(item['quantity']))
+
+                print(str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
+
+
             return JsonResponse({'status': 'success', 'message': 'success cart', 'cart': cart.get_cart()},
                                 status=status.HTTP_200_OK)
         except Exception as e:
@@ -40,7 +49,6 @@ class CartUpdate(APIView):
         cart = Cart(request)
         id = int(request.data.get('id'))
         quantity = int(request.data.get('quantity'))
-
         try:
             book = Book.objects.get(id=id)
         except Book.DoesNotExist:
@@ -49,8 +57,11 @@ class CartUpdate(APIView):
         cart.update(book=book, quantity=quantity)
         count = cart.__len__()
         print(count)
+        for item in cart:
+            print(
+                str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
 
-        return JsonResponse({'status': 'success', 'message': "Thêm sản phẩm thành công"}, status=200)
+        return JsonResponse({'status': 'success', 'message': "Cập nhật sản phẩm thành công"}, status=200)
 
 
 class CartDelete(APIView):
@@ -64,6 +75,13 @@ class CartDelete(APIView):
             return JsonResponse({'status': 'error', 'message': "Sách không tồn tại"}, status=200)
 
         cart.delete(book=book)
+        count = cart.__len__()
+
+        print(count)
+        for item in cart:
+            print(
+                str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
+
         return JsonResponse({'status': 'success', 'message': "Xóa phẩm thành công"}, status=200)
 
 

@@ -24,7 +24,8 @@ class Cart(object):
             self.cart[book_id] = {
                 'quantity': quantity,
                 'price': str(book.price),
-                'pricesale': str(book.pricesale)
+                'pricesale': str(book.pricesale),
+                'total_price': '0'
             }
         if self.cart[book_id]['pricesale'] > '0':
             self.cart[book_id]['total_price'] = str(Decimal(self.cart[book_id]['pricesale']) * int(self.cart[book_id]['quantity']))
@@ -33,6 +34,7 @@ class Cart(object):
         self.save()
 
     def update(self, book, quantity):
+
         book_id = str(book.id)
         self.cart[book_id]['quantity'] = quantity
         if self.cart[book_id]['pricesale'] > '0':

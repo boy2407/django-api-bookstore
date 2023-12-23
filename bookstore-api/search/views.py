@@ -14,6 +14,7 @@ class BookSearchView(ListAPIView):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response({'status': 'success', 'data': serializer.data})
+            return self.get_paginated_response({'status': 'success', 'books': serializer.data},status=200)
+
         serializer = self.get_serializer(queryset, many=True)
-        return JsonResponse({'status': 'success', 'data': serializer.data})
+        return JsonResponse({'status': 'success', 'books': serializer.data,},status=200)
