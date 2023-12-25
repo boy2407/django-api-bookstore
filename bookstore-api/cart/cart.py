@@ -68,7 +68,7 @@ class Cart(object):
         for item in self.cart.values():
             item['price'] = str(Decimal(item['price']))
             item['pricesale'] = str(Decimal(item['pricesale']))
-            if item['pricesale'] > '0':
+            if float(item['pricesale']) > 0:
                 item['total_price'] = str(Decimal(item['pricesale']) * int(item['quantity']))
             else:
                 item['total_price'] = str(Decimal(item['price']) * int(item['quantity']))

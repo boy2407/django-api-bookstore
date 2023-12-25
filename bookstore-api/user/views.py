@@ -29,11 +29,13 @@ from django.contrib.auth import get_user_model
 def registration(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-
         print(f'registration: {data}')
         form = RegistrationForm(data)
-        if form.is_valid():
+        address_serializer = AddressSerializer(data=data)  # new line
+
+        if form.is_valid() and address_serializer.is_valid():  # modified line
             user = form.save()
+            address = address_serializer.save(user=user)  # new line
             # Email verification setup (template)
             current_site = get_current_site(request)
             subject = 'Activate your account'
@@ -44,10 +46,15 @@ def registration(request):
                 'token': user_tokenizer_generate.make_token(user),
             })
             user.email_user(message=message, subject=subject)
-            return JsonResponse({'status': 'success', 'message': 'User created and verification email sent.'})
+            return JsonResponse({'status': 'success', 'message': 'Account created successfully,\n please check your email'},status=200)  # modified line
         else:
-            for field, errors in form.errors.items():
-                return JsonResponse({'status': 'error', 'message': 'error field','field': field, 'error': errors[0]}, status=200)
+            errors = {}
+            if not form.is_valid():
+                errors = {**errors, **form.errors}
+            if not address_serializer.is_valid():  # new line
+                errors = {**errors, **address_serializer.errors}  # new line
+            for field, error in errors.items():
+                return JsonResponse({'status': 'error', 'field': field, 'error': error[0]}, status=200)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 
@@ -70,9 +77,6 @@ def email_verification_success(request):
 def email_verification_failed(request):
     return render(request, 'user/registration/email-verification-failed.html')
 
-
-
-
 @login_required
 @csrf_exempt
 def get_profile(request):
@@ -83,10 +87,12 @@ def get_profile(request):
         if customer is not None and addresss is not None:
             customer_serializer = UserSerializer(model_to_dict(customer))
             address_serializer = AddressSerializer(model_to_dict(addresss))
+            print(customer_serializer.data)
+            print(address_serializer.data)
 
-            return JsonResponse({'user': customer_serializer.data, 'address': address_serializer.data})
+            return JsonResponse({'status': 'success', 'user': customer_serializer.data, 'address': address_serializer.data}, status=200)
         else:
-            return JsonResponse({'status': 'error', 'message': 'User or address not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'User or address not found.'}, status=200)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
 

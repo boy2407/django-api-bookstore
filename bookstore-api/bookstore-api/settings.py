@@ -29,7 +29,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['192.168.1.8',
                 '192.168.1.9',
                  '192.168.1.7',
-                 '192.168.1.11',]
+                 '192.168.1.11',
+                 '172.31.98.169',
+                 '192.168.2.112',]
 
 # Application definition
 
@@ -155,5 +157,5 @@ EMAIL_HOST_PASSWORD = 'hgbj btns tnhf kges'  # - Enter your app password
 VNPAY_TMN_CODE = 'GHP8BKE3'
 VNPAY_HASH_SECRET_KEY = 'KWFOVDFGJCLEMWWBRCPRVQDXCHNDHILX'
 VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-VNPAY_RETURN_URL = 'http://localhost:8000/vnpay/payment_return'
+VNPAY_RETURN_URL = 'http://192.168.2.112:8000/vnpay/payment_return'
 VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'

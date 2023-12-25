@@ -19,7 +19,8 @@ def formatcurrency(value):
     # Thiết lập ngôn ngữ là tiếng Việt và đơn vị tiền tệ là VND
     # locale.setlocale(locale.LC_ALL, 'vi_VN.utf8')
     # return locale.currency(value, grouping=True)
-    return "{:,.0f}".format(value)
+    return "{:,.0f}".format(float(value))
+
 
 
 @register.filter(name='shipping')

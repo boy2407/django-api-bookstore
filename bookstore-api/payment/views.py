@@ -32,7 +32,6 @@ def payment(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             # Process input data and build url payment
-
             form = PaymentForm(request.POST)
             if form.is_valid():
                 order_type = form.cleaned_data['order_type']
@@ -71,8 +70,21 @@ def payment(request):
             else:
                 print("Form input not validate")
         else:
-            return render(request, "payment/payment.html", {"title": "Thanh toán"})
+            title = request.GET.get('title')
+            order_id = request.GET.get('order_id')
+            amount = request.GET.get('amount')
+            order_desc = request.GET.get('order_desc')
+
+            # Truyền các tham số vào context
+            context = {
+                "title": title,
+                'order_id': order_id,
+                'amount': amount,
+                'order_desc': order_desc
+            }
+            return render(request, "payment/payment.html", context)
     else:
+        print('user is not authenticated ')
         return redirect('login')
 
 
@@ -153,7 +165,6 @@ def payment_return(request):
                         vnp_BankCode=vnp_BankCode,
                         user=customer,
                     )
-
                     cart.clear()
                     return render(request, "payment/payment_return.html", {"title": "Kết quả thanh toán",
                                                                            "result": "Thành công", "order_id": order_id,

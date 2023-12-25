@@ -19,7 +19,7 @@ class GetCart(APIView):
                 print(str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
 
 
-            return JsonResponse({'status': 'success', 'message': 'success cart', 'cart': cart.get_cart()},
+            return JsonResponse({'status': 'success', 'message': 'successfully get cart', 'cart': cart.get_cart()},
                                 status=status.HTTP_200_OK)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
