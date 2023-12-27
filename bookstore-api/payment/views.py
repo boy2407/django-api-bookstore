@@ -150,9 +150,10 @@ def payment_return(request):
             order = Order.objects.filter(user_id=customer.id).order_by('-create').first()
             address = Address.objects.filter(user_id=request.user.id).order_by('-create').first()
             print(order)
+            cart = Cart(request)
             if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
                 if vnp_ResponseCode == "00":
-                    cart = Cart(request)
+
                     send_mail_success_payment(cart=cart, order=order, address=address)
                     payment_Vnpay.objects.create(
                         order=order,
@@ -166,6 +167,9 @@ def payment_return(request):
                         user=customer,
                     )
                     cart.clear()
+                    for item in cart:
+                        print(
+                            str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
                     return render(request, "payment/payment_return.html", {"title": "Kết quả thanh toán",
                                                                            "result": "Thành công", "order_id": order_id,
                                                                            "amount": amount,
@@ -177,8 +181,12 @@ def payment_return(request):
                                                                            "vnp_BankCode": vnp_BankCode, })
 
                 else:
-                    print('1')
+                    print('1--------------------')
                     order.delete()
+                    cart.clear()
+                    for item in cart:
+                        print(
+                            str(f"id: {item['book']['id']},name: {item['book']['name']} ,price: {item['book']['price']}, quantity: {item['quantity']} ,total price: {item['total_price']}"))
                     return render(request, "payment/payment_return.html", {"title": "Kết quả thanh toán",
                                                                            "result": "Lỗi", "order_id": order_id,
                                                                            "amount": amount,
@@ -186,14 +194,15 @@ def payment_return(request):
                                                                            "vnp_TransactionNo": vnp_TransactionNo,
                                                                            "vnp_ResponseCode": vnp_ResponseCode})
             else:
-                print('2')
+                print('2-------------------')
                 order.delete()
+                cart.clear()
                 return render(request, "payment/payment_return.html",
                               {"title": "Kết quả thanh toán", "result": "Lỗi", "order_id": order_id, "amount": amount,
                                "order_desc": order_desc, "vnp_TransactionNo": vnp_TransactionNo,
                                "vnp_ResponseCode": vnp_ResponseCode, "msg": "Sai checksum"})
         else:
-
+            print('3-----------------')
             return render(request, "payment/payment_return.html", {"title": "Kết quả thanh toán", "result": ""})
     else:
         return redirect('login')

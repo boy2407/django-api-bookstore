@@ -91,6 +91,9 @@ class Cart(object):
         return total
 
     def clear(self):
-        del self.session[settings.CART_SESSION_ID]
-        self.session.modified = True
+        user_id = self.session.get('user_id')
+        if user_id in self.session:
+            del self.session[user_id]
+            self.session.modified = True
+
 

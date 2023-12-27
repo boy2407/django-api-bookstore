@@ -64,7 +64,7 @@ class CreateOrder(APIView):
 
             # # Send Email
             send_mail_success_payment(cart=cart, order=order, address=addr)
-            # cart.clear()
+            cart.clear()
 
             return Response({"status": "success", "message": "Order created successfully"},
                             status=200)
